@@ -1,0 +1,35 @@
+name: Build Windows EXE
+
+# Runs automatically whenever you push to the repo, and can also be
+# triggered manually from the Actions tab ("Run workflow" button).
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install pyinstaller requests beautifulsoup4 openpyxl tooluniverse
+
+      - name: Build the executable
+        run: |
+          pyinstaller --onefile --windowed --name phyto_pipeline_gui --collect-all tooluniverse phyto_pipeline_gui_v2.py
+
+      - name: Upload the .exe as a downloadable artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: phyto_pipeline_gui-windows
+          path: dist/phyto_pipeline_gui.exe
