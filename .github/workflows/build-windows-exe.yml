@@ -24,6 +24,11 @@ jobs:
         run: |
           pip install pyinstaller requests beautifulsoup4 openpyxl tooluniverse
 
+      - name: Remove obsolete pathlib backport (conflicts with PyInstaller)
+        run: |
+          pip uninstall pathlib -y
+        continue-on-error: true
+
       - name: Build the executable
         run: |
           pyinstaller --onefile --windowed --name phyto_pipeline_gui --collect-all tooluniverse phyto_pipeline_gui_v2.py
